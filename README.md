@@ -21,7 +21,7 @@ Put pretrained models follow below structure:
 
 Download CASIA_FACE_V5
 
-mkdir aligned_faces, features, scores directory
+mkdir aligned_faces, faces_pose, features, scores directory
 
 ## Citation
 
