@@ -10,12 +10,12 @@ from head_pose import detect_head_pose
 import json
 
 
-def get_idx_list(dataset_dir):
+def get_idx_list(dataset_dir, ext='bmp'):
     idx_list = [o for o in os.listdir(dataset_dir)
                 if os.path.isdir(os.path.join(dataset_dir, o))]
     image_idx_list = []
     for idx in sorted(idx_list):
-        for image_path in glob(os.path.join(dataset_dir, idx, '*.bmp')):
+        for image_path in glob(os.path.join(dataset_dir, idx, '*.' + ext)):
             image_idx_list.append((idx, os.path.basename(image_path)))
     return idx_list, image_idx_list
 
@@ -42,16 +42,14 @@ def get_input(detector, face_img):
     return nimg, roll
 
 
-if __name__ == '__main__':
-    dataset_dir = './CASIA_FACE_V5'
-    faces_pose_path = './faces_pose'
-    idx_list, image_idx_list = get_idx_list(dataset_dir)
+def run(dataset_dir, faces_pose_path, dest_dir, mtcnn_model_dir, ext='bmp'):
+    idx_list, image_idx_list = get_idx_list(dataset_dir, ext)
     print('Total id', len(idx_list))
     print('Total images: ', len(image_idx_list))
     np.save('image_idx_list.npy', np.asarray(image_idx_list))
     ctx = mxnet.gpu(0)
-    detector = get_detector(ctx, './mtcnn-model')
-    dest_dir = './aligned_faces'
+    detector = get_detector(ctx, mtcnn_model_dir)
+
     roll_res = dict()
     for idx in idx_list:
         if not os.path.isdir(os.path.join(dest_dir, idx)):
@@ -72,9 +70,16 @@ if __name__ == '__main__':
 
     json.dump(roll_res, open(os.path.join(faces_pose_path, 'roll.json'), 'w'))
 
-    idx_aligned_list, image_idx_aligned_list = get_idx_list(dest_dir)
+    idx_aligned_list, image_idx_aligned_list = get_idx_list(dest_dir, ext)
     print('Total id', len(idx_aligned_list))
     print('Total aligned images: ', len(image_idx_aligned_list))
+
+
+if __name__ == '__main__':
+    dataset_dir = './CASIA_FACE_V5'
+    faces_pose_path = './faces_pose'
+    dest_dir = './aligned_faces'
+    run(dataset_dir, faces_pose_path, dest_dir, './mtcnn-model')
 
 
 

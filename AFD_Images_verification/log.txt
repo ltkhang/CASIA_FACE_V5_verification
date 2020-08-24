@@ -1,0 +1,15 @@
+mobilefacenet
+Avg time: 1.4285742499446945 ms
+Avg face per second: 699.9986175298301
+resnet34
+Avg time: 3.426256467592441 ms
+Avg face per second: 291.8637321690863
+resnet50
+Avg time: 4.574276214037227 ms
+Avg face per second: 218.6138206808037
+resnet100
+Avg time: 7.580587772522364 ms
+Avg face per second: 131.91589227747443
+
+total 4101236028
+time: 59501.682827949524

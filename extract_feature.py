@@ -32,15 +32,12 @@ def get_feature(model, nimg):
     return embedding
 
 
-if __name__ == '__main__':
+def run(dataset_dir, models_path, features_path, ext='bmp'):
     ctx = mx.gpu(0)
-    dataset_dir = './aligned_faces'
-    models_path = './models'
-    features_path = './features'
-    idx_list, image_idx_list = get_idx_list(dataset_dir)
+    idx_list, image_idx_list = get_idx_list(dataset_dir, ext)
     print('Total id', len(idx_list))
     print('Total images: ', len(image_idx_list))
-    #load image
+    # load image
     image_dict = dict()
     for image_idx in image_idx_list:
         idx = image_idx[0]
@@ -73,10 +70,18 @@ if __name__ == '__main__':
         print('Avg time', 1000 * total_time / len(image_idx_list), 'ms')
         print('Avg face per second', 1 / (total_time / len(image_idx_list)))
         file.write('Avg time: ' + str(1000 * total_time / len(image_idx_list)) + ' ms\n')
-        file.write('Avg face per second: ' + str(1 / (total_time / len(image_idx_list)))+'\n')
+        file.write('Avg face per second: ' + str(1 / (total_time / len(image_idx_list))) + '\n')
         del model
     file.close()
 
     print('Save feature')
     for k, v in result.items():
         np.save(os.path.join(features_path, k, 'features.npy'), np.asarray(result[k], dtype=object))
+
+
+if __name__ == '__main__':
+    dataset_dir = './aligned_faces'
+    models_path = './models'
+    features_path = './features'
+    run(dataset_dir, models_path, features_path)
+
